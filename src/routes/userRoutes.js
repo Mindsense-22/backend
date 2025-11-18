@@ -9,6 +9,11 @@ router.post("/signup", authController.signup);
 router.post("/verify", authController.verifyAccount);
 router.post("/login", authController.login);
 
+// Reset Password
+router.post("/forgotPassword", authController.forgotPassword);
+router.post("/verifyResetCode", authController.verifyPassResetCode);
+router.patch("/resetPassword", authController.resetPassword);
+
 router.get("/approve-contact/:token", authController.acceptTrustedContact);
 
 // --- Protected Routes ---

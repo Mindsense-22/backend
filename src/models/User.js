@@ -35,6 +35,16 @@ const userSchema = new mongoose.Schema({
     select: false,
   },
 
+  // --- Reset Password ---
+  passwordResetCode: {
+    type: String,
+    select: false,
+  },
+  passwordResetExpires: {
+    type: Date,
+    select: false,
+  },
+
   // --- (Trusted Contact) ---
   trustedContact: {
     name: { type: String },
