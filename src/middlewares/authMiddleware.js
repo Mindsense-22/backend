@@ -29,9 +29,6 @@ exports.protect = async (req, res, next) => {
       });
     }
 
-    // 4. (اختياري) التأكد إن المستخدم مغيرش الباسوورد بعد ما التوكن طلع
-    // ممكن نزودها بعدين لو حابب تعقيد أكتر
-
     req.user = currentUser;
     next();
   } catch (err) {
