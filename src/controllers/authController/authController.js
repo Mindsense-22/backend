@@ -82,7 +82,7 @@ exports.verifyAccount = async (req, res) => {
     user.isVerified = true;
     user.verificationCode = undefined;
     user.verificationCodeExpires = undefined;
-    await user.save();
+    await user.save({ validateBeforeSave: false });
 
     const token = signToken(user._id);
 

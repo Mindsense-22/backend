@@ -2,6 +2,7 @@ const express = require("express");
 const authController = require("../controllers/authController/authController");
 const passwordController = require("../controllers/authController/passwordController");
 const contactController = require("../controllers/authController/contactController");
+const userController = require("../controllers/userController");
 const authMiddleware = require("../middlewares/authMiddleware");
 
 const router = express.Router();
@@ -22,5 +23,10 @@ router.get("/approve-contact/:token", contactController.acceptTrustedContact);
 router.use(authMiddleware.protect);
 
 router.post("/add-contact", contactController.addTrustedContact);
+
+// --- User Profile Routes ---
+router.get("/me", userController.getMe);
+router.patch("/updateMe", userController.updateMe);
+router.patch("/updateMyPassword", userController.updateMyPassword);
 
 module.exports = router;
