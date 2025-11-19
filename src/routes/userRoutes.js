@@ -11,6 +11,7 @@ const router = express.Router();
 router.post("/signup", authController.signup);
 router.post("/verify", authController.verifyAccount);
 router.post("/login", authController.login);
+router.post("/resendCode", authController.resendVerificationCode);
 
 // Reset Password
 router.post("/forgotPassword", passwordController.forgotPassword);

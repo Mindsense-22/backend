@@ -135,3 +135,56 @@ exports.login = async (req, res) => {
     res.status(400).json({ status: "fail", message: err.message });
   }
 };
+
+// Resend Verification Code
+exports.resendVerificationCode = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({
+        status: "fail",
+        message: "This email address is not registered.",
+      });
+    }
+
+    if (user.isVerified) {
+      return res.status(400).json({
+        status: "fail",
+        message: "This account is already active, you can log in.",
+      });
+    }
+
+    const newCode = Math.floor(100000 + Math.random() * 900000).toString();
+
+    user.verificationCode = newCode;
+    user.verificationCodeExpires = Date.now() + 10 * 60 * 1000;
+
+    await user.save({ validateBeforeSave: false });
+
+    const message = `Your new activation code is:\n${newCode}`;
+
+    try {
+      await sendEmail({
+        email: user.email,
+        subject: "New activation code - MindSense AI",
+        message,
+      });
+
+      res.status(200).json({
+        status: "success",
+        message: "A new code has been sent to your email.",
+      });
+    } catch (err) {
+      user.verificationCode = undefined;
+      user.verificationCodeExpires = undefined;
+      await user.save({ validateBeforeSave: false });
+      return res
+        .status(500)
+        .json({ status: "error", message: "Email sending failed" });
+    }
+  } catch (err) {
+    res.status(400).json({ status: "fail", message: err.message });
+  }
+};

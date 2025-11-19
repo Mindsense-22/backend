@@ -99,7 +99,7 @@ exports.resetPassword = async (req, res) => {
     user.passwordResetCode = undefined;
     user.passwordResetExpires = undefined;
 
-    await user.save();
+    await user.save({ validateBeforeSave: false });
 
     const token = signToken(user._id);
 
