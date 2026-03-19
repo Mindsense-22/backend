@@ -1,5 +1,6 @@
 const User = require("../models/User");
 const signToken = require("../utils/jwtFactory");
+const sendEmail = require("../utils/email");
 
 // Helpful function to filter the data that the user is allowed to edit only
 // (so that they cannot change their balance, for example, or change their status to administrator)
@@ -40,7 +41,7 @@ exports.updateMe = async (req, res) => {
       {
         new: true,
         runValidators: true,
-      }
+      },
     );
 
     res.status(200).json({
@@ -81,5 +82,43 @@ exports.updateMyPassword = async (req, res) => {
     });
   } catch (err) {
     res.status(400).json({ status: "fail", message: err.message });
+  }
+};
+
+// 4. Notify Trusted Contact
+exports.notifyTrustedContact = async (req, res) => {
+  try {
+    const { state, note } = req.body;
+
+    if (!state) {
+      return res.status(400).json({
+        status: "fail",
+        message: "state is required",
+      });
+    }
+
+    const user = await User.findById(req.user.id);
+
+    if (!user.trustedContact || user.trustedContact.status !== "accepted") {
+      return res.status(400).json({
+        status: "fail",
+        message: "No accepted trusted contact found",
+      });
+    }
+
+    const message = `Hello ${user.trustedContact.name},\n\n${user.name} may be experiencing a high stress state (${state}).\n${note ? `Note: ${note}\n` : ""}\nPlease check in with them when possible.\n\nMindSense AI`;
+
+    await sendEmail({
+      email: user.trustedContact.email,
+      subject: "MindSense AI alert for a trusted contact",
+      message,
+    });
+
+    res.status(200).json({
+      status: "success",
+      message: "Trusted contact notified successfully",
+    });
+  } catch (err) {
+    res.status(500).json({ status: "fail", message: err.message });
   }
 };

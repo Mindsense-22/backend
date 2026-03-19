@@ -10,8 +10,8 @@ const router = express.Router();
 // Authentication
 router.post("/signup", authController.signup);
 router.post("/verify", authController.verifyAccount);
-router.post("/login", authController.login);
 router.post("/resendCode", authController.resendVerificationCode);
+router.post("/login", authController.login);
 
 // Reset Password
 router.post("/forgotPassword", passwordController.forgotPassword);
@@ -29,5 +29,6 @@ router.post("/add-contact", contactController.addTrustedContact);
 router.get("/me", userController.getMe);
 router.patch("/updateMe", userController.updateMe);
 router.patch("/updateMyPassword", userController.updateMyPassword);
+router.post("/notify-contact", userController.notifyTrustedContact);
 
 module.exports = router;

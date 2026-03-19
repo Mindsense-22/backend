@@ -21,9 +21,9 @@ exports.addTrustedContact = async (req, res) => {
     await user.save({ validateBeforeSave: false });
 
     // Approval Link
-    const approvalLink = `${req.protocol}://${req.get(
-      "host"
-    )}/api/v1/users/approve-contact/${approvalToken}`;
+    const baseUrl =
+      process.env.APP_BASE_URL || `${req.protocol}://${req.get("host")}`;
+    const approvalLink = `${baseUrl}/api/v1/users/approve-contact/${approvalToken}`;
 
     const message = `
         Hello ${contactName},
