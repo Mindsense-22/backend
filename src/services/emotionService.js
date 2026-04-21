@@ -28,7 +28,8 @@ const normalizeResult = (result, source) => {
   let confidence = null;
 
   if (source === "face" && result && typeof result === "object") {
-    const faceScores = result.emotion;
+    const faceData = result.emotion;
+    const faceScores = faceData?.scores || faceData;
     const dominant = getDominantFromScores(faceScores);
 
     if (dominant) {
